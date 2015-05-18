@@ -37,7 +37,7 @@
 <use   name="MagneticField/Records"/>
 <!--use   name="ZZMatrixElement/MELA"/-->
 <!--use   name="ZZMatrixElement/MEKD"/-->
-<!--use   name="ZZMatrixElement/MEMCalculators"/-->
+<use   name="ZZMatrixElement/MEMCalculators"/>
 <!--use   name="CMGTools/External"/-->
 <use   name="CondFormats/JetMETObjects"/>
 <flags EDM_PLUGIN="1"/>
