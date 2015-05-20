@@ -2217,10 +2217,12 @@ void UFHZZ4LAna::setTreeVariables( const edm::Event& iEvent, const edm::EventSet
 
         jecunc->setJetPt(jet_jer->Pt());
         jecunc->setJetEta(goodJets[k].eta());
-        double jecunc_up = 1.0+jecunc->getUncertainty(true);
+        //double jecunc_up = 1.0+jecunc->getUncertainty(true);
+        double jecunc_up = 1.0;//+jecunc->getUncertainty(true);
         jecunc->setJetPt(jet_jer->Pt());
         jecunc->setJetEta(goodJets[k].eta());
-        double jecunc_dn = 1.0-jecunc->getUncertainty(false);
+        //double jecunc_dn = 1.0-jecunc->getUncertainty(false);
+        double jecunc_dn = 1.0;//-jecunc->getUncertainty(false);
 
         if (jet_jer->Pt() > 30.0 && fabs(goodJets[k].eta())<4.7) {
             if (isDeltaR_eta4p7) { 

@@ -35,25 +35,35 @@ myfilelist.extend( [
         #'/store/mc/Phys14DR/GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/10000/C0E81726-3670-E411-BE66-008CFA007CE0.root'
 
         # Categories sync
-        'file:/scratch/osghpc/dsperka/Run2/HZZ4l/CMSSW_7_2_0/src/ggH_JHU_125.MINIAODSIM00.root',
-        'file:/scratch/osghpc/dsperka/Run2/HZZ4l/CMSSW_7_2_0/src/VBF_JHU_125.MINIAODSIM00.root',
-        'file:/scratch/osghpc/dsperka/Run2/HZZ4l/CMSSW_7_2_0/src/WminusH_JHU_125.MINIAODSIM00.root',
-        'file:/scratch/osghpc/dsperka/Run2/HZZ4l/CMSSW_7_2_0/src/ZH_JHU_125.MINIAODSIM00.root',
-        'file:/scratch/osghpc/dsperka/Run2/HZZ4l/CMSSW_7_2_0/src/ttH_JHU_125.MINIAODSIM00.root',
+#        'file:/scratch/osghpc/dsperka/Run2/HZZ4l/CMSSW_7_2_0/src/ggH_JHU_125.MINIAODSIM00.root',
+#        'file:/scratch/osghpc/dsperka/Run2/HZZ4l/CMSSW_7_2_0/src/VBF_JHU_125.MINIAODSIM00.root',
+#        'file:/scratch/osghpc/dsperka/Run2/HZZ4l/CMSSW_7_2_0/src/WminusH_JHU_125.MINIAODSIM00.root',
+#        'file:/scratch/osghpc/dsperka/Run2/HZZ4l/CMSSW_7_2_0/src/ZH_JHU_125.MINIAODSIM00.root',
+#        'file:/scratch/osghpc/dsperka/Run2/HZZ4l/CMSSW_7_2_0/src/ttH_JHU_125.MINIAODSIM00.root',
+     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/ggH_JHU_125/ggH_JHU_125.MINIAODSIM00.root',
+     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/VBF_JHU_125/VBF_JHU_125.MINIAODSIM00.root',
+     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/WminusH_JHU_125/WminusH_JHU_125.MINIAODSIM00.root',
+     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/ZH_JHU_125/ZH_JHU_125.MINIAODSIM00.root',
+     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/ttH_JHU_125/ttH_JHU_125.MINIAODSIM00.root',
+
         
 ]
 )
 
 process.source = cms.Source("PoolSource",fileNames = myfilelist,
 #                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
-                             eventsToProcess = cms.untracked.VEventRange('1:2130-1:2130')#'1:4093-1:4093','1:2755-1:2755','1:2130-1:2130')
+#                             eventsToProcess = cms.untracked.VEventRange('1:2130-1:2130')#'1:4093-1:4093','1:2755-1:2755','1:2130-1:2130')
 			     
                             )
+
+#process.source.eventsToProcess = cms.untracked.VEventRange("1:894701:721")
+#process.source.eventsToProcess = cms.untracked.VEventRange("1:894700:1954")
+#process.source.eventsToProcess = cms.untracked.VEventRange("1:894701:1983")
 
 process.TFileService = cms.Service("TFileService",
 #                                   fileName = cms.string("GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6_PU20bx25_PAT_testAna.root")
 #                                   fileName = cms.string("EventCat.root")
-                                   fileName = cms.string("EventCat_test.root")
+                                   fileName = cms.string("EventCat_test_1.root")
 )
 
 '''
@@ -89,6 +99,13 @@ process.mvaNonTrigV025nsPHYS14 = cms.EDProducer("SlimmedElectronMvaIDProducer",
                                      )
      
 
+process.goodPrimaryVertices = cms.EDFilter("VertexSelector",
+    filter = cms.bool(True),
+    src = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    cut = cms.string('!isFake && ndof > 4 && abs(z) <= 24 && position.Rho <= 2')
+)
+
+
 process.Ana = cms.EDAnalyzer('UFHZZ4LAna',
                               photonSrc    = cms.untracked.InputTag("slimmedPhotons"),
                               electronSrc  = cms.untracked.InputTag("mvaNonTrigV025nsPHYS14","NonTrig"),
@@ -96,7 +113,7 @@ process.Ana = cms.EDAnalyzer('UFHZZ4LAna',
                               correctedJetSrc = cms.untracked.InputTag("slimmedJets"),
                               jetSrc       = cms.untracked.InputTag("slimmedJets"),
                               metSrc       = cms.untracked.InputTag("slimmedMETs"),
-                              vertexSrc    = cms.untracked.InputTag("offlineSlimmedPrimaryVertices"), #or selectedVertices 
+                              vertexSrc    = cms.untracked.InputTag("goodPrimaryVertices"), #or selectedVertices 
                               isMC         = cms.untracked.bool(True),
                               isSignal     = cms.untracked.bool(True),
                               mH           = cms.untracked.double(125.0),
@@ -117,7 +134,7 @@ process.AnaAfterHlt = cms.EDAnalyzer('UFHZZ4LAna',
                               correctedJetSrc = cms.untracked.InputTag("slimmedJets"),
                               jetSrc       = cms.untracked.InputTag("slimmedJets"),
                               metSrc       = cms.untracked.InputTag("slimmedMETs"),
-                              vertexSrc    = cms.untracked.InputTag("offlineSlimmedPrimaryVertices"), #or selectedVertices 
+                              vertexSrc    = cms.untracked.InputTag("goodPrimaryVertices"), #or selectedVertices 
                               isMC         = cms.untracked.bool(True),
                               isSignal     = cms.untracked.bool(True),
                               mH           = cms.untracked.double(125.0),
@@ -152,7 +169,8 @@ process.hltHighLevel = cms.EDFilter("HLTHighLevel",
 
 process.load('UFHZZAnalysisRun2.FSRPhotons.fsrPhotons_cff')
 
-process.p = cms.Path(#process.reCorrectedPatJets
+process.p = cms.Path(#process.reCorrectedPatJets*
+                     process.goodPrimaryVertices*
                      process.fsrPhotonSequence*
 		     process.boostedMuons*
                      process.mvaNonTrigV025nsPHYS14*
